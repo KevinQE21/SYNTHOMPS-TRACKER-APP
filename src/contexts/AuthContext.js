@@ -25,7 +25,7 @@ function AuthProvider({ children }) {
   }, [isAuth])
 
   function register(email, password){
-    const URL_REGISTER_BACK_API = '#';
+    const URL_REGISTER_BACK_API = 'http://localhost:5000/api/v1/auth/register';
     return axios
       .post(URL_REGISTER_BACK_API, { email, password })
       .then(response => response.data.user)
@@ -33,9 +33,9 @@ function AuthProvider({ children }) {
   }
 
   function login(email, password){
-    const URL_LOGIN_BACK_API = '#';
+    const URL_LOGIN_BACK_API = 'http://localhost:5000/api/v1/auth/login';
     return axios
-      .post(URL_LOGIN_BACK_API, { email, password })
+      .post(URL_LOGIN_BACK_API, { email : email, password: password })
       .then(response => {
         setToken(response.data.token)
         localStorage.setItem('token', response.data.token)
@@ -46,7 +46,7 @@ function AuthProvider({ children }) {
       })
       .catch(error => error.message);
   }
-
+  
   function logout(){
     localStorage.removeItem('token')
     setCurrentUser(null)
