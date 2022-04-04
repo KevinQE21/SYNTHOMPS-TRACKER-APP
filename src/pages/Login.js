@@ -1,10 +1,8 @@
 import NavigationBar from '../components/NavigationBar'
 import { Link, useNavigate } from 'react-router-dom'
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import { Alert, Button, Card, Form} from 'react-bootstrap';
-
-import axios from 'axios'
 
 function Login(){
     const emailRef = useRef();
@@ -20,54 +18,19 @@ function Login(){
         setError('');
         setLoading(true);
         await login(emailRef.current.value, passwordRef.current.value)
-            .then(response => userRegisterInformation(response.id))
+            .then(response => navigate('/home'))
             .catch(e => {
                 setError(e.message);
                 setLoading(false);
             });
-        
     }
 
-    async function userRegisterInformation(id){
-        try {            
-            const userData = {
-                'email': id,
-            }
-            
-            const URL_USER_REGISTER_API = 'http://localhost:5000/api/v1/auth/user';
-            
-            var req = {
-                url: URL_USER_REGISTER_API,
-                method: "POST",
-                data: userData,
-                headers: {
-                    Authorization: 'Bearer ' + token,
-                    Accept: "application/json"
-                }
-            };
+    useEffect(() => {
+        if (currentUser) {
+            navigate('/home');
+        }    
+    }, []);
 
-            await axios(req).then(resp => {
-                console.log(resp.data.hasInfoRegistered);
-                if(resp.data.user.hasInfoRegistered){
-                    navigate('/home');
-                }
-                else {
-                    navigate('/registerUserInfo');
-                }
-            });
-
-        } catch (e) {
-            setError('Error : ' + e.message)
-            setLoading(false)
-        }
-    }
-
-    if (currentUser) {
-        navigate('/home');
-    }
-    else{
-        navigate('/');
-    }
 
     return (
         <>

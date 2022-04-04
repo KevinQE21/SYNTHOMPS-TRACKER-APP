@@ -28,11 +28,8 @@ function NavigationBar(){
                     currentUser
                     ?
                     <>
-                    
                     <Nav.Link as={ Link } to="/profile">Profile</Nav.Link>  
-                    <Nav.Link as={ Link } to="/login" onClick={handleLogout}>
-                        Logout             
-                    </Nav.Link>
+                    <Nav.Link as={ Link } to="/" onClick={handleLogout}>Logout</Nav.Link>
                     </>                    
                     :
                     <>
