@@ -1,18 +1,17 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useImperativeHandle } from "react";
 import { Button, Modal, Form, Alert } from 'react-bootstrap';
 import { useAuth } from  '../contexts/AuthContext';
 import axios from 'axios';
 
 function AddSynthomps(){
     const [show, setShow] = useState(false);
+    const [intensity, setintensity] = useState('');
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const { currentUser, token } = useAuth(); 
     const [ error, setError ] = useState('');
-    const [ loading, setLoading ] = useState('');
     const synthomp = useRef();
     const comment = useRef();
-    const intensity = useRef();
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -24,41 +23,50 @@ function AddSynthomps(){
 
             const data = {
                 userinfoid: id,
-                intensity : intensity.current.value,
+                intensity : intensity,
                 comments : comment.current.value,
                 synid : synthomp.current.value
             };
 
-            var req = {
-                url: URL,
-                method: "POST",
-                data: data,
-                headers: {
-                    Authorization: 'Bearer ' + token,
-                    Accept: "application/json"
-                }
-            };
+            console.log(data);
 
-            await axios(req).then(resp => console.log(resp));
+            // var req = {
+            //     url: URL,
+            //     method: "POST",
+            //     data: data,
+            //     headers: {
+            //         Authorization: 'Bearer ' + token,
+            //         Accept: "application/json"
+            //     }
+            // };
+
+            // await axios(req).then(resp => console.log(resp));
 
         } catch (e) {
             setError(`Error: ${e.message}`);
-            setLoading(false);
         }
     }
 
     function getSynthomps(){
+        const URL = 'http://localhost:5000/api/v1/user/register';
         
-        // return bloodtypes.map(bloodtype => {
-        //     return (
-        //         <>
-        //             <option key={bloodtype} value={bloodtype}>
-        //                 {bloodtype}
-        //             </option>
-        //         </>
-        //     )
-        // });
+        // var req = {
+        //     url: URL,
+        //     method: "GET",
+        //     headers: {
+        //         Authorization: 'Bearer ' + token,
+        //         Accept: "application/json"
+        //     }
+        // };
+
+        // await axios(req).then(resp => console.log(resp));
     }
+
+    const handleChange = e => {
+        e.persist();
+        setintensity(e.target.value);        
+    };
+    
 
   return (
     <>
@@ -92,28 +100,53 @@ function AddSynthomps(){
                                 rows={3} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formComment">
+                <Form.Label>Select a value to describe the intensity, with 5 being the highest and 1 being the lowest.</Form.Label>
                 {['radio'].map((type) => (
                     <div key={`inline-${type}`} className="mb-3">
                     <Form.Check
                         inline
                         label="1"
+                        value="1"
                         name="group1"
+                        onChange={handleChange}
                         type={type}
                         id={`inline-${type}-1`}
                     />
                     <Form.Check
                         inline
                         label="2"
+                        value="2"
                         name="group1"
+                        onChange={handleChange}
                         type={type}
                         id={`inline-${type}-2`}
                     />
                     <Form.Check
                         inline
-                        disabled
-                        label="3 (disabled)"
+                        label="3"
+                        value="3"
+                        name="group1"
+                        onChange={handleChange}
                         type={type}
                         id={`inline-${type}-3`}
+                    />
+                    <Form.Check
+                        inline
+                        label="4"
+                        value="4"
+                        name="group1"
+                        onChange={handleChange}
+                        type={type}
+                        id={`inline-${type}-4`}
+                    />
+                    <Form.Check
+                        inline
+                        label="5"
+                        value="5"
+                        name="group1"
+                        onChange={handleChange}
+                        type={type}
+                        id={`inline-${type}-5`}
                     />
                     </div>
                 ))}
