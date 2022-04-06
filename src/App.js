@@ -1,5 +1,6 @@
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import { AuthProvider } from  './contexts/AuthContext'
+import './App.css';
 
 import Register from './pages/Register';
 import Login from './pages/Login';
@@ -8,6 +9,7 @@ import Profile from './pages/Profile';
 
 import Dashboard from './pages/Dashboard';
 import RegisterUserInfo from './pages/RegisterUserInfo';
+import RegisterUserSynthomp from './pages/RegisterUserSynthomps';
 import Home from './pages/Home';
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
         <Route path="/home" element={ <Home /> }/>
         
         <Route path="/registerUserInfo" element={ <RegisterUserInfo /> }/>
+        <Route path="/registerUserSynthomp" element={ <RegisterUserSynthomp /> }/>
       </Routes>
     </Router>
     </AuthProvider>    

@@ -1,17 +1,20 @@
-import { useState, useRef, useImperativeHandle } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button, Modal, Form, Alert } from 'react-bootstrap';
 import { useAuth } from  '../contexts/AuthContext';
 import axios from 'axios';
 
+import { FaPlus } from 'react-icons/fa';
+
 function AddSynthomps(){
+    const { currentUser, token } = useAuth(); 
     const [show, setShow] = useState(false);
     const [intensity, setintensity] = useState('');
+    const [synthomps, setSynthomp] = useState([]);    
+    const [ error, setError ] = useState('');
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const { currentUser, token } = useAuth(); 
-    const [ error, setError ] = useState('');
-    const synthomp = useRef();
     const comment = useRef();
+    const synthomp = useRef();
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -19,48 +22,63 @@ function AddSynthomps(){
         try {
             const { id } = currentUser;
 
-            const URL = 'http://localhost:5000/api/v1/user/register';
+            const URL = 'http://localhost:5000/api/v1/track';
 
             const data = {
-                userinfoid: id,
+                email: id,
                 intensity : intensity,
                 comments : comment.current.value,
-                synid : synthomp.current.value
+                synthomp : synthomp.current.value,
+                date : new Date().toISOString().slice(0, 10)
             };
 
             console.log(data);
 
-            // var req = {
-            //     url: URL,
-            //     method: "POST",
-            //     data: data,
-            //     headers: {
-            //         Authorization: 'Bearer ' + token,
-            //         Accept: "application/json"
-            //     }
-            // };
+            var req = {
+                url: URL,
+                method: "POST",
+                data: data,
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                    Accept: "application/json"
+                }
+            };
 
-            // await axios(req).then(resp => console.log(resp));
+            await axios(req)
+              .then(resp => {
+                handleClose()
+              })
+              .catch(
+                <Alert variant="danger">
+                  Error
+                </Alert>
+              );
 
         } catch (e) {
             setError(`Error: ${e.message}`);
         }
     }
 
-    function getSynthomps(){
-        const URL = 'http://localhost:5000/api/v1/user/register';
+    async function getSynthomps(){
+        const { id } = currentUser;
         
-        // var req = {
-        //     url: URL,
-        //     method: "GET",
-        //     headers: {
-        //         Authorization: 'Bearer ' + token,
-        //         Accept: "application/json"
-        //     }
-        // };
+        const URL = `http://localhost:5000/api/v1/synthomps/userSynthomps?email=${id}`;    
 
-        // await axios(req).then(resp => console.log(resp));
+        var req = {
+            url: URL,
+            method: "GET",
+            headers: {
+                Authorization: 'Bearer ' + token,
+                Accept: "application/json"
+            }
+        };
+
+        await axios(req).then(resp => setSynthomp(resp.data.userSynthomps));
     }
+
+    useEffect(() => {
+        getSynthomps()  
+    });
 
     const handleChange = e => {
         e.persist();
@@ -70,8 +88,8 @@ function AddSynthomps(){
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Launch demo modal
+      <Button variant="dark" size="lg" onClick={handleShow} className="button-bottom">
+        <FaPlus />
       </Button>
 
       <Modal show={show} onHide={handleClose}>
@@ -89,7 +107,17 @@ function AddSynthomps(){
                                 placeholder="Synthomp" 
                                 ref={ synthomp }
                                 required>
-                        { getSynthomps() }
+                                  {synthomps.map(synthomp => {
+                                        return (
+                                            <>
+                                                <option key={synthomp.id} value={synthomp.id}>
+                                                    {synthomp.name}
+                                                </option>
+                                            </>
+                                        )
+                                      }
+                                    )
+                                  }
                     </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formComment">

@@ -4,23 +4,21 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from  '../contexts/AuthContext'
 import axios from 'axios';
 import AddSynthomps from "../components/AddSynthomps";
+import SynthompsTable from "../components/SynthompsTable";
+import { Tabs, Tab } from 'react-bootstrap';
 
 function Home(){
     const { currentUser, token } = useAuth();
     const navigate = useNavigate();
 
     async function userRegisterInformation(){
-        try {            
-            const userData = {
-                'email': currentUser.id,
-            }
+        try {     
             
-            const URL_USER_REGISTER_API = 'http://localhost:5000/api/v1/auth/user';
+            const URL_USER_REGISTER_API = `http://localhost:5000/api/v1/auth/user?email=${currentUser.id}`;
             
             var req = {
                 url: URL_USER_REGISTER_API,
-                method: "POST",
-                data: userData,
+                method: "GET",
                 headers: {
                     Authorization: 'Bearer ' + token,
                     Accept: "application/json"
@@ -54,8 +52,8 @@ function Home(){
 
     return (
         <>
-            <NavigationBar/>
-            <h1>Home</h1>
+            <NavigationBar/> 
+            <SynthompsTable /> 
             <AddSynthomps />
         </>
     )

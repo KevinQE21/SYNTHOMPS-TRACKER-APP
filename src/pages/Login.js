@@ -31,7 +31,6 @@ function Login(){
         }    
     }, []);
 
-
     return (
         <>
             <NavigationBar />

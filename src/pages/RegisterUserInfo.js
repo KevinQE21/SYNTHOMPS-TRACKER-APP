@@ -48,7 +48,9 @@ function RegisterUserInfo() {
 
             console.log(data);
 
-            await axios(req).then(resp => navigate('/home'));
+            await axios(req).then(resp => {
+                navigate('/registerUserSynthomp')
+            });
 
         } catch (e) {
             setError(`Error: ${e.message}`);
